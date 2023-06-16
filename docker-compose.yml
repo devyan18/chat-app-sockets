@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+
+  database:
+    image: mongo
+    container_name: chat-app-database
+    restart: always
+    ports:
+      - 5000:27017
+    volumes:
+      - ./database:/data/db
+
+  server:
+    image: chat-app-server
+    depends_on:
+      - database
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+
+  client:
+    image: chat-app-client
+    depends_on:
+      - server
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
